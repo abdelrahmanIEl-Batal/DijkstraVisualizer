@@ -27,11 +27,10 @@ public class GraphDrawer
     private String Cost;
     private String extra;
     private JFrame frame;
-    private JPanel mainPanel;
-    private JLabel costLabel, valueLabel;
     ArrayList<Edge> snapShot;
     int step,source,destination;
     private JButton nextStep;
+    JLabel soFarCost;
     private Rectangle rect;
     private boolean isDirectedGraph;
     private BasicVisualizationServer<Integer, String> vv;
@@ -135,7 +134,8 @@ public class GraphDrawer
         frame.pack();
         if (right) {
             frame.setLocation((int) rect.getMaxX() - (int) rect.getMaxX() / 2, 0);
-            updateGraph();
+            setupGUI();
+            setupInteractivity();
         }
         frame.setVisible(true);
     }
@@ -159,15 +159,20 @@ public class GraphDrawer
         addEdge(curr);
     }
 
-    public void updateGraph()
+    public void setupGUI()
     {
         nextStep = new JButton("Next Step");
         JPanel panel = new JPanel();
         panel.add(nextStep);
         JLabel info = new JLabel("Cost so far: ");
-        JLabel soFarCost = new JLabel(Cost);
+        soFarCost = new JLabel(Cost);
         panel.add(info);
         panel.add(soFarCost);
+        this.frame.add(panel,BorderLayout.WEST);
+    }
+
+    private void setupInteractivity()
+    {
         nextStep.addActionListener(new ActionListener() {
 
             @Override
@@ -179,65 +184,66 @@ public class GraphDrawer
                     int cc = curr.getCost();
                     cc+= Integer.parseInt(soFarCost.getText());
                     soFarCost.setText(Integer.toString(cc));
+                    updateGraph();
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "There are no more steps!");
                 }
-                frame.getContentPane().remove(vv);
-                GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
-                rect = defaultScreen.getDefaultConfiguration().getBounds();
 
-                Layout<Integer, String> layout = new CircleLayout<>(mst);
-                layout.setSize(new Dimension((int) rect.getMaxX() / 2, (int) rect.getMaxY() / 2));
-                BasicVisualizationServer<Integer, String> vv = new BasicVisualizationServer<Integer, String>(layout);
-                vv.setPreferredSize(new Dimension((int) rect.getMaxX() / 2, (int) rect.getMaxY() / 2));
-                vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
-                Transformer<String, Font> edgeFontTransfomer = new Transformer<String, Font>()
-                {
-                    @Override
-                    public Font transform(String s)
-                    {
-                        return new Font(s, 0, 20);
-                    }
-                };
-
-                Transformer<Integer, Font> NodeFontTransformer = new Transformer<Integer, Font>()
-                {
-                    @Override
-                    public Font transform(Integer s)
-                    {
-                        return new Font(s.toString(), 0, 20);
-                    }
-                };
-                Transformer<Integer,Paint> vertexColor = new Transformer<Integer,Paint>() {
-                    public Paint transform(Integer i) {
-                        if(i == source) return Color.GREEN;
-                        if(i == destination) return Color.GREEN;
-                        return Color.RED;
-                    }
-                };
-                vv.getRenderContext().setVertexFillPaintTransformer(vertexColor);
-                vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
-                vv.getRenderContext().setEdgeFontTransformer(edgeFontTransfomer);
-                vv.getRenderContext().setVertexFontTransformer(NodeFontTransformer);
-                vv.getRenderContext().setVertexShapeTransformer(new Transformer<Integer, Shape>()
-                {
-                    @Override
-                    public Shape transform(Integer u)
-                    {
-                        return new Ellipse2D.Double(-15, -15, 30, 30);
-                    }
-                });
-                vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
-                frame.getContentPane().add(vv);
-                frame.repaint();
-                frame.setVisible(true);
             }
         });
-        this.frame.add(panel,BorderLayout.WEST);
     }
+    private void updateGraph()
+    {
+        frame.getContentPane().remove(vv);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+        rect = defaultScreen.getDefaultConfiguration().getBounds();
 
+        Layout<Integer, String> layout = new CircleLayout<>(mst);
+        layout.setSize(new Dimension((int) rect.getMaxX() / 2, (int) rect.getMaxY() / 2));
+        BasicVisualizationServer<Integer, String> vv = new BasicVisualizationServer<Integer, String>(layout);
+        vv.setPreferredSize(new Dimension((int) rect.getMaxX() / 2, (int) rect.getMaxY() / 2));
+        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+        Transformer<String, Font> edgeFontTransfomer = new Transformer<String, Font>()
+        {
+            @Override
+            public Font transform(String s)
+            {
+                return new Font(s, 0, 20);
+            }
+        };
 
-
+        Transformer<Integer, Font> NodeFontTransformer = new Transformer<Integer, Font>()
+        {
+            @Override
+            public Font transform(Integer s)
+            {
+                return new Font(s.toString(), 0, 20);
+            }
+        };
+        Transformer<Integer,Paint> vertexColor = new Transformer<Integer,Paint>() {
+            public Paint transform(Integer i) {
+                if(i == source) return Color.GREEN;
+                if(i == destination) return Color.GREEN;
+                return Color.RED;
+            }
+        };
+        vv.getRenderContext().setVertexFillPaintTransformer(vertexColor);
+        vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
+        vv.getRenderContext().setEdgeFontTransformer(edgeFontTransfomer);
+        vv.getRenderContext().setVertexFontTransformer(NodeFontTransformer);
+        vv.getRenderContext().setVertexShapeTransformer(new Transformer<Integer, Shape>()
+        {
+            @Override
+            public Shape transform(Integer u)
+            {
+                return new Ellipse2D.Double(-15, -15, 30, 30);
+            }
+        });
+        vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.CNTR);
+        frame.getContentPane().add(vv);
+        frame.repaint();
+        frame.setVisible(true);
+    }
 }
