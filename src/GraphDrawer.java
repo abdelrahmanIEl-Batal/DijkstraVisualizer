@@ -1,6 +1,7 @@
 import com.sun.xml.internal.messaging.saaj.soap.JpegDataContentHandler;
 import edu.uci.ics.jung.algorithms.layout.*;
 import edu.uci.ics.jung.graph.AbstractGraph;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
@@ -189,7 +190,6 @@ public class GraphDrawer
                 else{
                     JOptionPane.showMessageDialog(null, "There are no more steps!");
                 }
-
             }
         });
     }

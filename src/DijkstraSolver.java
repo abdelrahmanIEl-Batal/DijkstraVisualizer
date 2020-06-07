@@ -8,11 +8,11 @@ public class DijkstraSolver {
     private int n, source, destination;
     private ArrayList<Edge> edges;
     private ArrayList<Edge> dijkstraEdges;
-    private int [] distance,parent;
+    private int [] distance;
+    ArrayList<Pair<Integer,Integer> > parent;
     boolean isGraphDirected = false;
     private Boolean canReach;
 
-    Map< Pair<Integer,Integer>, Integer > cost;
     List< Pair<Integer, Integer> > [] adj;
     PriorityQueue<Pair<Integer,Integer>> q;
 
@@ -25,17 +25,15 @@ public class DijkstraSolver {
         this.isGraphDirected = isDirected;
         adj = new List[n];
         for(int i=0;i<n;++i) adj[i] = new ArrayList<>();
-        cost = new HashMap<>();
     }
 
     private void Initialize()
     {
-        this.cost = new HashMap<>();
         dijkstraEdges = new ArrayList<>();
-        parent = new int[n];
+        parent = new ArrayList<>(n);
         distance = new int[n];
         Arrays.fill(distance,Integer.MAX_VALUE);
-        Arrays.fill(parent,-1);
+        for(int i=0;i<n;++i) parent.add(new Pair<>(-1,0));
         canReach = true;
         for(int i=0;i<edges.size();++i)
         {
@@ -43,13 +41,10 @@ public class DijkstraSolver {
             int u = e.getU() , v = e.getV(), cost = e.getCost();
             if(isGraphDirected){
                 adj[u].add(new Pair<>(v,cost));
-                this.cost.put(new Pair<>(u,v),cost);
             }
             else{
                 adj[u].add(new Pair<>(v,cost));
                 adj[v].add(new Pair<>(u,cost));
-                this.cost.put(new Pair<>(u,v),cost);
-                this.cost.put(new Pair<>(v,u),cost);
             }
         }
 
@@ -80,7 +75,7 @@ public class DijkstraSolver {
                 if(distance[v] + newCost < distance[to])
                 {
                     distance[to] = distance[v] + newCost;
-                    parent[to] = v;
+                    parent.set(to,new Pair<>(v,newCost));
                     q.add(new Pair<>(distance[to],to));
                 }
             }
@@ -96,9 +91,9 @@ public class DijkstraSolver {
 
     private void getPath(int s)
     {
-        if(parent[s]==-1) return;
-        int p = parent[s];
-        dijkstraEdges.add(new Edge(p,s,this.cost.get(new Pair<>(p,s))));
+        if(parent.get(s).getKey()==-1) return;
+        int p = parent.get(s).getKey();
+        dijkstraEdges.add(new Edge(p,s,parent.get(s).getValue()));
         getPath(p);
     }
 
