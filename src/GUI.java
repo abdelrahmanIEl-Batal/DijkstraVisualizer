@@ -95,9 +95,15 @@ public class GUI extends JPanel
                     JTextField u = edgesTF.get(i);
                     JTextField v = edgesTF.get(i + 1);
                     JTextField cost = edgesTF.get(i + 2);
+                    Integer U = Integer.valueOf(u.getText());
+                    U--;
+                    Integer V = Integer.valueOf(v.getText());
+                    V--;
+
                     try
                     {
-                        Edge e = new Edge(Integer.valueOf(u.getText()), Integer.valueOf(v.getText()), Integer.valueOf(cost.getText()));
+                        Edge e = new Edge(U, V, Integer.valueOf(cost.getText()));
+
                         // Check that there is no out of bounds vertices
                         if (e.getU() >= nV || e.getV() >= nV || e.getU() < 0 || e.getV() < 0)
                         {
@@ -112,15 +118,16 @@ public class GUI extends JPanel
                     }
                 }
                 String s = endPoints.get(0).getText(), d = endPoints.get(1).getText();
+                if(Integer.valueOf(s) - 1 >= nV || Integer.valueOf(d) - 1 >= nV || Integer.valueOf(s) - 1 < 0 || Integer.valueOf(d) - 1 < 0) error = 1;
                 isGraphDirected = isDirected.isSelected();
                 if(s.length() == 0 || d.length() == 0)
                     JOptionPane.showMessageDialog(null, "Source and Destination values must not empty");
                 else if(s.equals(d))
                     JOptionPane.showMessageDialog(null, "Source and Destination must be different nodes");
                 else if (error == 0)
-                    generateGraph(nV, edgesArr, Integer.valueOf(s), Integer.valueOf(d),  isGraphDirected);
+                    generateGraph(nV, edgesArr, Integer.valueOf(s) - 1, Integer.valueOf(d) - 1,  isGraphDirected);
                 else if (error == 1)
-                    JOptionPane.showMessageDialog(null, "Node Numbers must be between [0, n - 1] inclusive");
+                    JOptionPane.showMessageDialog(null, "Node Numbers must be between [1, n] inclusive");
                 else if (error == 2)
                     JOptionPane.showMessageDialog(null, "Please enter all fields in numeric format (All entires must be numbers)");
 
