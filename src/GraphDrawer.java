@@ -44,7 +44,7 @@ public class GraphDrawer
         this.destination = destination;
         mst = new SparseMultigraph<Integer, String>();
         for (int i = 0; i < nodes; ++i)
-            mst.addVertex(i);
+            mst.addVertex(i + 1);
 
         extra = new String();
         for (Edge e : edgeList)
@@ -62,9 +62,9 @@ public class GraphDrawer
         Integer u = e.getU(), v = e.getV();
         eCost += extra;
         if (isDirected)
-            mst.addEdge(eCost, u, v, EdgeType.DIRECTED);
+            mst.addEdge(eCost, u + 1 , v + 1, EdgeType.DIRECTED);
         else
-            mst.addEdge(eCost, u, v,EdgeType.UNDIRECTED);
+            mst.addEdge(eCost, u + 1 , v + 1,EdgeType.UNDIRECTED);
         extra += " ";
     }
 
@@ -74,9 +74,9 @@ public class GraphDrawer
         Integer u = e.getU(), v = e.getV();
         eCost += extra;
         if (isDirectedGraph)
-            mst.addEdge(eCost, u, v, EdgeType.DIRECTED);
+            mst.addEdge(eCost, u + 1, v + 1 , EdgeType.DIRECTED);
         else
-            mst.addEdge(eCost, u, v);
+            mst.addEdge(eCost, u + 1 , v + 1);
         extra += " ";
     }
 
@@ -91,6 +91,7 @@ public class GraphDrawer
         vv = new BasicVisualizationServer<Integer, String>(layout);
         vv.setPreferredSize(new Dimension((int) rect.getMaxX() / 2, (int) rect.getMaxY() / 2));
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+
         Transformer<String, Font> edgeFontTransfomer = new Transformer<String, Font>()
         {
             @Override
@@ -111,8 +112,8 @@ public class GraphDrawer
 
         Transformer<Integer,Paint> vertexColor = new Transformer<Integer,Paint>() {
             public Paint transform(Integer i) {
-                if(i == source) return Color.GREEN;
-                if(i == destination) return Color.GREEN;
+                if(i - 1 == source) return Color.GREEN;
+                if(i - 1== destination) return Color.GREEN;
                 return Color.RED;
             }
         };
@@ -154,7 +155,7 @@ public class GraphDrawer
         this.right = right;
         Edge curr = snapShot.get(step++);
         Cost = new String(Integer.toString(curr.getCost()));
-        mst.addVertex(curr.getU()); mst.addVertex(curr.getV());
+        mst.addVertex(curr.getU() + 1); mst.addVertex(curr.getV() + 1);
         this.extra = new String();
         extra+=" ";
         addEdge(curr);
@@ -224,8 +225,8 @@ public class GraphDrawer
         };
         Transformer<Integer,Paint> vertexColor = new Transformer<Integer,Paint>() {
             public Paint transform(Integer i) {
-                if(i == source) return Color.GREEN;
-                if(i == destination) return Color.GREEN;
+                if(i - 1 == source) return Color.GREEN;
+                if(i - 1 == destination) return Color.GREEN;
                 return Color.RED;
             }
         };
